@@ -1,0 +1,160 @@
+---
+title: "Proyecto final RMD borrador"
+author: "Ezequiel Rivarola Velasco"
+output: rmdformats::readthedown
+
+
+
+---
+``` {r include=FALSE}
+library(plotly)
+library(kableExtra)
+library(knitr)
+library(rvest)
+library(dplyr)
+library(ggplot2)
+library(reshape2)
+options(knitr.table.format = "html") 
+```
+
+
+
+
+# Proyecto Final R
+
+## Sección I - Expresiones Regulares
+
+En la primera parte de este ensayo vamos a hablar sobre expresiones regulares. Puntualmente vamos a analizar dos páginas que tratan el tema y lo abordan de forma diferente, concluyendo cual es mejor a la hora de comunicar sobre regex. Las páginas a analizar son: [rpubs](http://rpubs.com/ydmarinb/429756) y [labscn](https://labscn-unalmed.github.io/programacion-R/clases/clase10.html).
+
+
+### RPubs vs Labscn
+
+Las páginas apuntan a un lector con poca experiencia en programación. Esto se puede deducir por el tipo de contenido y por cómo está tratado. Ambas empiezan con una definición de regex y el detalle de sus metacaracteres. En este punto, ambas páginas presentan un contenido con más similitudes que diferencias. Sin embargo, RPubs lo explica de una forma mas detallada e incluso trata algun punto más, como la agrupación, contenido obligatorio en el tema.
+
+La segunda mitad del contenido entra de lleno en lo que es código. Aquí es donde se ve la principal diferencia entre las paginas. Por más que ambas hablan de las funciones primoridiales de expresiones regulares:
+
+* `grep`
+* `gsub`
+* `strsplit`
+* `regexpr`
+
+Rpubs lo estructura y explica con mayor claridad. Principalmente porque divide los codigos por acciones: 
+
+* Detección de patrón
+* División de una cadena de texto
+* Extracción y sustitución de patrones
+
+Haciendo énfasis en cómo las distintas funciones ayudan a lograr el objetivo. Por el lado de Labscn, por más que ejemplifica códigos similares a la otra pagina, sólo se centra en el uso y significado de `[]`, sin explicar con claridad lo que las distintas funciones generan.
+
+El último punto que es importante mencionar para el análisis, es que RPubs incluye las respuestas de todos los códigos que ejemplifican los usos de las funciones y expresiones regulares, mientras que Labscn no las incluye. Este punto es muy importante ya que como el objetivo es enseñar, las soluciones son necesarias para que el lector termine de comprender las funcionalidades de los códigos.
+
+
+### Conclusión
+
+RPubs y Labscn tienen un objetivo común, que es enseńar sobre expresiones Regulares en R. No obstante, a pesar que ambas tienen un contenido similar, RPubs logra un mejor resultado. Principalmente porque se centra en ser didáctica, explícita y no da por sentado el conocimiento del lector. Aplica un mejor detalle en la teoría, estructura mejor la codificación y ejemplifica con resultados cada tratamiento de expresiones regulares. Esto hace que el contenido sea claro para cualquier tipo de usuario, desde principiantes hasta personas que ya trataron R.  
+
+
+## Sección II - Markdown
+
+La segunda sección de este proyecto sugiere analizar dos páginas con contenido de markdown y debatir sobre cual presenta un mejor resultado de cara al lector. Para ello vamos a concentrarnos en [MD](https://markdown.es/sintaxis-markdown/) y [RSP](https://rstudio-pubs-static.s3.amazonaws.com/330387_5a40ca72c3b14824acedceb7d34618d1.html).
+
+
+### Markdown vs Rstudiopubs
+
+Markdown y Rstudiopubs son dos páginas que tienen el objetivo de funcionar como guía de Markdown al usuario nuevo. La primera diferencia puede apreciarse ni biene inicia el contenido. El primer sitio, tiene una muy breve introducción a los puntos que se van a tratar, mientras que Rstudiopubs le dedica un párrafo entero a explicar lo que es markdown y su uso. Punto fundamental, dado que el targuet de usuario es alguien que busca aprender sobre el lenguaje.
+
+Ambas guías estructuran el contenido del lenguaje correctamente. Sin embargo, RSP resulta mucho mas claro visualmente. Aquí hay varias razones. Por un lado, MD incluye muchas descripciones en un tema que debiera ser más conciso, mostrando codigo y resultado. Esto genera un poco de confusión porque no puede apreciarse de forma rápida la comparación entre el lenguaje a entrar y el output. Además el sitio MD contiene una gran cantidad de anuncios de display que impiden la lectura de corrido del tema, haciendo más tediosa la experiencia en página. A favor de MD cabe destacar que incluyó un índice, recurso que hace más eficaz la navegación del contenido. Hubiese sido de gran ayuda a la hora de navegar la página de RSP.
+
+Otro punto a favor de RSP es el contenido. A pesar que ambos sitios tocan los principales puntos del lenguaje, RSP es mucho más completo. Contempla Dataframes, plots, videos, gifs, ecuaciones y diagramas UMl; contenido que la mayoría de las guías no comenta.
+
+### Conclusión
+
+El contenido tocado por MD es correcto e incluso utilizó algunos recursos que agregan valor, como el índice y el video explicativo -lo mejor hubiese sido incluirlo al final, ya que al principio entorpece la lectura-. Sin embargo, RSP termina siendo una guía más completa y clara para el lector. En este punto, es una ventaja que RSP haya generado la información en Markdown ya que queda más limpia y eficaz. Es recomendable, para un usuario nuevo del lenguaje, la lectura de RSP debido a que va a lograr entender el contendido de forma más precisa y rapida.
+
+
+## Sección III - Análisis demográfico de España
+
+
+
+```{r include=FALSE}
+url.ibex <-"https://es.wikipedia.org/wiki/Demograf%C3%ADa_de_España"
+tmp <- read_html(url.ibex, dec=',')
+tmp <- html_nodes(tmp, "table")
+Poblacion <- html_table(tmp[[2]])
+# Saco Punto
+Poblacion<-lapply(Poblacion, function(x) gsub("\\.",'',x) )
+#punto por coma
+Poblacion<-lapply(Poblacion, function(x) gsub(',',"\\.",x) )
+#Saco Espacio
+Poblacion<-lapply(Poblacion, function(x) gsub(" ","",x) )
+#Paso todo a numeric
+Poblacion <-lapply(Poblacion, function (x) as.numeric(x))
+Poblacion<- as.data.frame(Poblacion)
+#cambio nombre
+names(Poblacion)= c('Año','Poblacion','Nacimientos','Muertes','Cambio Natural','Tasa Natalidad','Tasa Mortalidad','Tasa Cambio','Tasa Fertilidad')
+
+```
+
+En la última sección de este ensayo vamos a analizar los datos demográficos de España. Principalmente el tamaño de la población, la natalidad, las muertes y sus respectivas tasas. La tabla a analizar es la siguiente:
+
+```{r undefined, echo=FALSE}
+kable(Poblacion[1:10, 1:9], caption = 'Demografía Española',align = c('l','c','c','c','c','c','c','c','c')) %>%
+   footnote(general = 'primeras 10 filas')%>%
+  kable_styling(fixed_thead = T)
+```
+Estábamos acostumbrado a una lógica tendencia incremental de población en la gran mayoría de los países. Sin embargo, este crecimiento viene bajando el ritmo en los últimos años
+
+Si analizamos la curva de Población:
+
+```{r echo=FALSE}
+scatterPlot <- Poblacion %>% 
+  ggplot(aes(x = Año, y = Poblacion)) + 
+  geom_point(alpha=0.7, colour = "red4") + 
+  labs(x = "Año", 
+       y = "Poblacion",
+       title = "Población Española Histórica") +
+  geom_hline(yintercept=0, linetype="dashed", color = "red4", size=0.5) +
+  theme_minimal()
+ggplotly(scatterPlot)
+```
+
+Puede apreciarse como a partir de 1980 empieza a crecer con una pendiente menor, recuperándose un poco en los 2000 pero luego llegando a valores decrecientes en el 2014.
+
+```{r include=FALSE}
+#Saco el año con mayor tasa de natalidad
+head(Poblacion[order(-Poblacion$`Tasa Natalidad`),],1)
+```
+
+
+```{r echo=FALSE}
+#cambio la tabla a ancho para usar la tasa de natalidad y mortalidad como variable en un grafico de facetas
+Poblacion2<- select(Poblacion,Año,`Tasa Natalidad`,`Tasa Mortalidad`)
+Poblacion.Ancho<- melt(Poblacion2, id.vars = c('Año'))
+```
+
+Más allá que la caída en la tasa de natalidad es la principal causa en esta tendencia, se puede ahondar aún más comparándolo con las cifras de muertes.
+
+
+```{r echo= FALSE}
+ggplot(Poblacion.Ancho, aes(x = Año, y = value))+
+  geom_point() + geom_smooth(method = 'loess', color='red4') + 
+  facet_grid(~variable)+
+    geom_hline(yintercept=0, linetype="dashed", color = "red4", size=0.5) +
+  theme_minimal()
+```
+
+
+
+En el grafico anterior, puede verse como la tasa de natalidad tiene un comportamiento decreciente bastante constante, mientras que a partir de 1950 la tasa de mortalidad se empieza a estabilizar. Por lo tanto, cada vez hay menos nacimientos y una mortalidad mas constante. Todo concluye en un cambio natural cada vez menor, inclusive negativo.
+
+```{r, echo=FALSE}
+kable(tail(Poblacion[,1:5],5), caption = 'Cambio Natural España',align = c('l','c','c','c','c','c','c','c','c')) %>%
+   footnote(general = 'Últimos 5 Años')%>%
+  kable_styling(fixed_thead = T)%>%
+  column_spec(6, bold = T, color = "Red")%>%
+  row_spec(1:1, bold = T, color = "black")
+```
+
+### Conclusión
+
+En conclusión, el crecimiento de la población española está en desacelaración debido a que la tasa de nacimientos está decreciendo más abruptamente que la de mortalidad. Se puede apreciar de forma clara y visual que a pesar que la esperanza de vida supone ser mejor y la tasa de mortalidad es menor, los ciudadanos estan tendiendo a tener menos hijos. Lo cual deriva en reducció poblacional. Los valores positivos de las tasas de natalidad, mortalidad y fertilidad ocurrieron hace varios años mientras que indicadores como el cambio natural, está atravesando su peor momento en la actualidad. Estos cambios en los comportamientos de la sociedad no son fáciles de cambiar en el corto plazo. Por lo tanto, es momento que empiecen a a haber políticas de mediano y corto plazo para no tener inconvenientes a futuro.
