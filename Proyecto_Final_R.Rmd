@@ -1,5 +1,5 @@
 ---
-title: "Proyecto final RMD borrador"
+title: "Proyecto final RMD"
 author: "Ezequiel Rivarola Velasco"
 output: rmdformats::readthedown
 
